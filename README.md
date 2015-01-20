@@ -1,7 +1,15 @@
 V8.NET
 ======
 
+
+
 **Summary:** A fairly non-abstracted wrapper for Google's V8 JavaScript engine.
+
+
+The **Repository** contains the following branches:
+- **Master** (stable releases for windows)
+- **development** (bleeding edge development changes)
+- **development-mono** (bleeding edge development changes for mono)
 
 *Note: The project is hosted at [CodePlex](https://v8dotnet.codeplex.com/) officially, so the files here are only updated after posting there first.*
 

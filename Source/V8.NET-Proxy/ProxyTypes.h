@@ -1,22 +1,16 @@
 // V8 proxy exports header for the Dream Space internet development framework.
 // This source is released under LGPL.
-
-#include <exception>
-#include <vector>
-#if (_MSC_PLATFORM_TOOLSET >= 110)
-#include <mutex>
-#endif
-#include <include\v8stdint.h>
 #include "Platform.h"
 
-using namespace std;
-
-#if (_MSC_PLATFORM_TOOLSET < 110)
-#define nullptr NULL
-#endif
 
 #if _WIN32 || _WIN64
+#include <exception>
+#include <vector>
 #include <windows.h>
+#include <include\v8stdint.h>
+#include <include\v8.h>
+#include <include\v8-debug.h>
+#include <include\libplatform\libplatform.h>
 #pragma comment(lib, "winmm.lib") // (required by V8 now)
 #include <oleauto.h>
 #define ALLOC_MANAGED_MEM(size) GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT, size)
@@ -25,40 +19,68 @@ using namespace std;
 //??#define ALLOC_MANAGED_STRING(size) CoTaskMemAlloc(GMEM_FIXED|GMEM_ZEROINIT, size)
 #define FREE_MARSHALLED_STRING(ptr) { CoTaskMemFree(ptr); ptr = nullptr; }
 #define STDCALL __stdcall
-#else
-#include <glib.h>
-#define ALLOC_MANAGED_MEM(size) g_malloc(size)
-#define FREE_MANAGED_MEM(ptr) g_free(ptr)
-#define STDCALL __stdcall
+#endif
+
+#if _LINUX || _OSX
+#include <iostream>
+#include <mutex>
+#include <vector>
+#include <cstring>
+#endif
+
+#if _LINUX || _OSX
+#include <include/v8stdint.h>
+#include <include/v8.h>
+#include <include/v8-debug.h>
+#include <include/libplatform/libplatform.h>
+#define ALLOC_MANAGED_MEM(size) malloc(size)
+#define REALLOC_MANAGED_MEM(ptr, size) realloc(ptr, size)
+#define FREE_MANAGED_MEM(ptr) free(ptr)
+// according to http://stackoverflow.com/questions/3054257/is-there-stdcall-in-linux
+#define STDCALL
+typedef uint8_t byte;
 #endif
 
 #define USING_V8_SHARED 1
 #define V8_USE_UNSAFE_HANDLES 1 // (see https://groups.google.com/forum/#!topic/v8-users/oBE_DTpRC08)
 
-#include <include\v8.h>
-#include <include\v8-debug.h>
-#include <include\libplatform\libplatform.h>
 
-using namespace v8;
+#if (_MSC_PLATFORM_TOOLSET >= 110)
+#include <mutex>
+#endif
 
+#if (_MSC_PLATFORM_TOOLSET < 110)
+#define nullptr NULL
+#endif
+
+#if _WIN32 || _WIN64
 #define EXPORT __declspec(dllexport)
+#endif
+
+#if _LINUX || _OSX
+#define EXPORT
+#endif
+
+using namespace std;
+using namespace v8;
 
 // ========================================================================================================================
 
 template <class T> struct CopyablePersistent {
-    v8::Persistent<T, CopyablePersistentTraits<T>> Value;
+    v8::Persistent<T, CopyablePersistentTraits<T> > Value;
     CopyablePersistent() { }
     CopyablePersistent(CopyablePersistent &p) { Value = p; }
-    CopyablePersistent(Handle<T> &h) { Value = v8::Persistent<T, CopyablePersistentTraits<T>>(Isolate::GetCurrent(), h); }
+    CopyablePersistent(Handle<T> &h) { Value = v8::Persistent<T, CopyablePersistentTraits<T> >(Isolate::GetCurrent(), h); }
+    CopyablePersistent(Local<T> h) { Value = v8::Persistent<T, CopyablePersistentTraits<T> >(Isolate::GetCurrent(), h); }
     ~CopyablePersistent() { if (!Value.IsEmpty()) Value.Reset(); }
-    CopyablePersistent& operator= (const Handle<T>& h) { Value = v8::Persistent<T, CopyablePersistentTraits<T>>(Isolate::GetCurrent(), h); return *this; }
+    CopyablePersistent& operator= (const Handle<T>& h) { Value = v8::Persistent<T, CopyablePersistentTraits<T> >(Isolate::GetCurrent(), h); return *this; }
     operator Local<T>() const { return Handle(); }
     T* operator ->() const { return *Handle(); }
     /* Returns the local handle for the persisted value.  Make sure to be in the handle scope before calling. */
     Local<T> Handle() const { return Local<T>::New(Isolate::GetCurrent(), Value); }
     bool IsEmpty() const { return Value.IsEmpty(); }
     void Reset() { return Value.Reset(); }
-    template <class S> Local<S> As() { return Handle().As<S>(); }
+    template <class S> Local<S> As() { return Handle().template As<S>(); }
 };
 
 #define V8Undefined v8::Undefined(Isolate::GetCurrent())

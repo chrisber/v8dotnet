@@ -38,10 +38,10 @@
                { 
                   'defines': ['_LINUX'],
                   'cflags':[  
-                     '-Werror -Wall -std=c++11 -w -fpermissive -fPIC -c',
+                     ' -pthread  -fpermissive  -m64 -fno-strict-aliasing -fPIC -m64 -O3 -ffunction-sections -fdata-sections -fno-omit-frame-pointer -fdata-sections -ffunction-sections -O3 -fno-rtti   -fexceptions -std=gnu++0x  ',
                   ],
                   'ldflags':[  
-                     '-Wall',
+                     '-pthread  -fpermissive  -m64 -fno-strict-aliasing -fPIC -m64 -O3 -ffunction-sections -fdata-sections -fno-omit-frame-pointer -fdata-sections -ffunction-sections -O3 -fno-rtti   -fexceptions -std=gnu++0x ',
                   ],
                   'copies':[  
                      {  
@@ -53,13 +53,13 @@
                   ],
                   'link_settings':{  
                      'libraries':[  
-                        '<(base_dir)/io.js/out/Release/libcares.a',
-                        '<(base_dir)/io.js/out/Release/libchrome_zlib.a',
-                        '<(base_dir)/io.js/out/Release/libdebugger-agent.a',
-                        '<(base_dir)/io.js/out/Release/libhttp_parser.a',
-                        '<(base_dir)/io.js/out/Release/libnode.a',
-                        '<(base_dir)/io.js/out/Release/libopenssl.a',
-                        '<(base_dir)/io.js/out/Release/libuv.a',
+                       # '<(base_dir)/io.js/out/Release/libcares.a',
+                       # '<(base_dir)/io.js/out/Release/libchrome_zlib.a',
+                       # '<(base_dir)/io.js/out/Release/libdebugger-agent.a',
+                       # '<(base_dir)/io.js/out/Release/libhttp_parser.a',
+                       # '<(base_dir)/io.js/out/Release/libnode.a',
+                       # '<(base_dir)/io.js/out/Release/libopenssl.a',
+                       # '<(base_dir)/io.js/out/Release/libuv.a',
                         '<(base_dir)/io.js/out/Release/libv8.a',
                         '<(base_dir)/io.js/out/Release/libv8_base.a',
                         '<(base_dir)/io.js/out/Release/libv8_libbase.a',

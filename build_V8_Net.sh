@@ -76,12 +76,12 @@ buildV8Proxy (){
 	debugInfo 2 "Build V8.Net native proxy (libV8_Net_Proxy.so )"
 	debugFlag=" "
 
-	if [ "${v8_net__mode}" == "debug" ]
-		then 	
-			./gyp/gyp -debug -Dbase_dir="`pwd`" -Darch="${v8_net_target}" -Dtarget_arch="${v8_net_target}" -Dbuild_option="${v8_net__mode}"  -f make --depth=. v8dotnet.gyp  --generator-output="./Build/${v8_net_target}.${v8_net__mode}/makefiles"
-		else
+	# if [ "${v8_net__mode}" == "debug" ]
+	# 	then 	
+	# 		./gyp/gyp -debug -Dbase_dir="`pwd`" -Darch="${v8_net_target}" -Dtarget_arch="${v8_net_target}" -Dbuild_option="${v8_net__mode}"  -f make --depth=. v8dotnet.gyp  --generator-output="./Build/${v8_net_target}.${v8_net__mode}/makefiles"
+	# 	else
 			./gyp/gyp  -Dbase_dir="`pwd`" -Darch="${v8_net_target}" -Dtarget_arch="${v8_net_target}" -Dbuild_option="${v8_net__mode}"  -f make --depth=. v8dotnet.gyp  --generator-output="./Build/${v8_net_target}.${v8_net__mode}/makefiles"
-	fi
+	# fi
 	V=1 make -C "./Build/${v8_net_target}.${v8_net__mode}/makefiles"
 	echo $?
 	debugInfo $? "make V8.Net Proxy for ${v8_net_target}.${v8_net__mode}"

@@ -29,10 +29,17 @@
 #endif
 
 #if _LINUX || _OSX
+
+
 #include <include/v8stdint.h>
 #include <include/v8.h>
 #include <include/v8-debug.h>
 #include <include/libplatform/libplatform.h>
+
+#include <node.h>
+#include <node_version.h>
+#include <math.h>
+
 #define ALLOC_MANAGED_MEM(size) malloc(size)
 #define REALLOC_MANAGED_MEM(ptr, size) realloc(ptr, size)
 #define FREE_MANAGED_MEM(ptr) free(ptr)

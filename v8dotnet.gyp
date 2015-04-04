@@ -11,13 +11,18 @@
          'type':'shared_library',
          'toolsets': [ 'target' ],
          'msvs_guid':'5ECEC9E5-8F23-47B6-93E0-C3B328B3BE65',
-         'direct_dependent_settings':{  
-            'include_dirs':[  
-               'Source/V8.NET-Proxy/V8/'
-            ],
-         },
          'include_dirs':[  
             'Source/V8.NET-Proxy/V8/',
+            'io.js/src',
+            'io.js/deps/cares',
+            'io.js/deps/debugger-agent',
+            'io.js/deps/http_parser',
+            'io.js/deps/mdb_v8',
+            'io.js/deps/npm',
+            'io.js/deps/openssl',
+            'io.js/deps/uv',
+            'io.js/deps/v8',
+            'io.js/deps/zlib',
          ],
          'sources':[  
             'Source/V8.NET-Proxy/Exports.cpp',
@@ -42,21 +47,25 @@
                      {  
                         'destination':'<(PRODUCT_DIR)/../../',
                         'files':[  
-                           'Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/lib.target/libv8.so',
+                           #'Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/lib.target/libv8.so',
                         ],
                      }
                   ],
                   'link_settings':{  
                      'libraries':[  
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/obj.target/testing/libgmock.a',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/obj.target/testing/libgmock_main.a',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/obj.target/testing/libgtest.a',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/obj.target/testing/libgtest_main.a',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/obj.target/tools/gyp/libv8_base.a',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/obj.target/tools/gyp/libv8_libbase.a',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/obj.target/tools/gyp/libv8_libplatform.a',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/obj.target/tools/gyp/libv8_nosnapshot.a',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/out/<(target_arch).<(build_option)/obj.target/tools/gyp/libv8_snapshot.a',              
+                        '<(base_dir)/io.js/out/Release/libcares.a',
+                        '<(base_dir)/io.js/out/Release/libchrome_zlib.a',
+                        '<(base_dir)/io.js/out/Release/libdebugger-agent.a',
+                        '<(base_dir)/io.js/out/Release/libhttp_parser.a',
+                        '<(base_dir)/io.js/out/Release/libnode.a',
+                        '<(base_dir)/io.js/out/Release/libopenssl.a',
+                        '<(base_dir)/io.js/out/Release/libuv.a',
+                        '<(base_dir)/io.js/out/Release/libv8.a',
+                        '<(base_dir)/io.js/out/Release/libv8_base.a',
+                        '<(base_dir)/io.js/out/Release/libv8_libbase.a',
+                        '<(base_dir)/io.js/out/Release/libv8_libplatform.a',
+                        '<(base_dir)/io.js/out/Release/libv8_nosnapshot.a',
+                        '<(base_dir)/io.js/out/Release/libv8_snapshot.a',
                      ]
                   },
                }

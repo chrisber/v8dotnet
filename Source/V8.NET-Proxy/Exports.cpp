@@ -1,5 +1,6 @@
 #include "ProxyTypes.h"
 
+
 // ############################################################################################################################
 // Misc. Global Functions
 
@@ -11,6 +12,39 @@
 // Prevent name mangling for the interface functions. 
 extern "C"
 {
+		// static void Init(Handle<Object> target) {
+		// }
+	//io.js Releated
+
+	EXPORT void STDCALL IoJsNodeModule(HandleProxy *proxy)
+	{	   		
+
+		auto engine = handleProxy->EngineProxy();
+		
+		BEGIN_ISOLATE_SCOPE(engine);
+		BEGIN_CONTEXT_SCOPE(engine);
+
+		auto handle = handleProxy->Handle();
+		if (handle.IsEmpty() || !handle->IsObject())
+			throw runtime_error("The handle does not represent an object.");
+		
+		
+		
+		NODE_MODULE(primitives, handle)
+
+		END_CONTEXT_SCOPE;
+		END_ISOLATE_SCOPE;
+	}
+
+    static void Init(Handle<Object> target) {
+    	// String::New("ManagedObjectID")
+        // target->Set(v8::String::NewSymbol("pi"), v8::Number::New(M_PI));
+
+        // NODE_DEFINE_CONSTANT(target, NODE_MINOR_VERSION);
+		v8::Isolate* isolate = v8::Isolate::New();
+        target->Set(String::NewFromUtf8(isolate,"name"), String::NewFromUtf8(isolate,"Nikhil"));
+    }
+    NODE_MODULE(primitives, Init)
 	// ------------------------------------------------------------------------------------------------------------------------
 	// Engine Related
 

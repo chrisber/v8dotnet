@@ -173,12 +173,8 @@ def clone (library, command):
 def makeBuildDeps ():
     debug.info("Downloading V8 build dependencies")
 
-    libraries = {  'GYP': 'git clone https://chromium.googlesource.com/external/gyp ' + os.path.join(v8_build_dir,  'build/gyp') , 
-                'Cygwin': 'git clone https://chromium.googlesource.com/chromium/deps/cygwin ' + os.path.join(v8_build_dir,  'third_party/cygwin'),
-                'python_26' : 'git clone https://chromium.googlesource.com/chromium/deps/python_26 ' + os.path.join(v8_build_dir,  'third_party/python_26'),
-                'ICU' : 'git clone https://chromium.googlesource.com/chromium/deps/icu52 ' + os.path.join(v8_build_dir,  'third_party/icu'),
-                'GTest' : 'git clone https://chromium.googlesource.com/chromium/testing/gtest  ' + os.path.join(v8_build_dir,  'testing/gtest'),
-                'GMock' : 'git clone https://chromium.googlesource.com/external/gmock  ' + os.path.join(v8_build_dir,  'testing/gmock'),
+    libraries = { 
+                'python_26' : 'git clone https://chromium.googlesource.com/chromium/deps/python_26 ' + os.path.join(base_dir,  'python_26'),
             }
     for library, command in libraries.items():
         clone (library, command)
@@ -244,14 +240,17 @@ def buildV8Proxy ():
 
 
 def buildV8ProxyWindows():
-    srcDir = "Build/%s.%s/makefiles/out/Default/lib.target/"% (v8_target, v8_mode)
+
+    makeBuildDeps()
+
+    srcDir = "Build%s.%s/makefiles/out/Default/lib.target/"% (v8_target, v8_mode)
     destDir = "BuildResult/" + v8_mode
     debug.info('Build V8.Net native Proxy %s.%s' % (v8_target, v8_mode))
     if not os.path.exists(destDir):
         os.makedirs(destDir)
 
-    python = os.path.join(v8_build_dir, "third_party/python_26/python ")
-    gyp = os.path.join(v8_build_dir, "build/gyp_v8")
+    python = os.path.join(base_dir, "python_26\python.exe ")
+    gyp = os.path.join(base_dir, "gyp\gyp_main.py")
     buildoptions =  "  -Dbase_dir=%s -Dtarget_arch=%s -Dbuild_option=%s -f msvs -G msvs_version=%s --depth=. v8dotnet.gyp  --generator-output=" %  (base_dir, v8_target, v8_mode,VSVer) 
     srddir = "Build\%s.%s\makefiles" % (v8_target, v8_mode)
     outdir =  os.path.join(base_dir, srddir) 

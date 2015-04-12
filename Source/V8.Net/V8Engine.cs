@@ -81,77 +81,79 @@ namespace V8.Net
         {
             if (args.Name.StartsWith("V8.Net.Proxy.Interface"))
             {
-                string assemblyRoot = "";
 
-                if (HttpContext.Current != null)
-                    assemblyRoot = HttpContext.Current.Server.MapPath("~/bin");
-                else
-                {
-                    var codebaseuri = Assembly.GetExecutingAssembly().CodeBase;
-                    Uri codebaseURI = null;
-                    if (Uri.TryCreate(codebaseuri, UriKind.Absolute, out codebaseURI))
-                        assemblyRoot = Path.GetDirectoryName(codebaseURI.LocalPath); // (check pre-shadow copy location first)
-                    if (!Directory.Exists(assemblyRoot))
-                        assemblyRoot = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); // (check loaded assembly location next)
-                }
-
-                if (Directory.Exists(Path.Combine(assemblyRoot, ASPBINSubFolderName)))
-                    assemblyRoot = Path.Combine(assemblyRoot, ASPBINSubFolderName);
-
-                //// ... validate access to the root folder ...
-                //var permission = new FileIOPermission(FileIOPermissionAccess.Read, assemblyRoot);
-                //var permissionSet = new PermissionSet(PermissionState.None);
-                //permissionSet.AddPermission(permission);
-                //if (!permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet))
-
-                // ... get platform details ...
-
-                var bitStr = IntPtr.Size == 8 ? "x64" : "x86";
-                var platformLibraryPath = Path.Combine(assemblyRoot, bitStr);
-                string fileName;
-                // ... if the platform folder doesn't exist, try loading assemblies from the current folder ...
-                if (Directory.Exists(platformLibraryPath))
-                    fileName = Path.Combine(platformLibraryPath, "V8.Net.Proxy.Interface." + bitStr + ".dll");
-                else
-                    fileName = Path.Combine(assemblyRoot, "V8.Net.Proxy.Interface." + bitStr + ".dll");
-
-                // ... attempt to update environment variable automatically for the native DLLs ...
-                // (see: http://stackoverflow.com/questions/7996263/how-do-i-get-iis-to-load-a-native-dll-referenced-by-my-wcf-service
-                //   and http://stackoverflow.com/questions/344608/unmanaged-dlls-fail-to-load-on-asp-net-server)
-
-                try
-                {
-                    var path = System.Environment.GetEnvironmentVariable("PATH"); // TODO: Detect other systems if necessary.
-                    System.Environment.SetEnvironmentVariable("PATH", platformLibraryPath + ";" + path);
-                }
-                catch { }
-
-                AppDomain.CurrentDomain.AssemblyResolve -= Resolver;  // (handler is only needed once)
-
-                // ... if the current directory has an x86 or x64 folder for the bit depth, automatically change to that folder ...
-                // (this is required to load the correct VC++ libraries if made available locally)
-
-                var bitLibFolder = Path.Combine(Directory.GetCurrentDirectory(), bitStr);
-                if (Directory.Exists(bitLibFolder))
-                    Directory.SetCurrentDirectory(bitLibFolder);
-
+				string fullPath = System.Reflection.Assembly.GetAssembly (typeof(V8Engine)).Location;
+				string fileName = Path.Combine(fullPath, "windows\\x86\\V8_Net_Proxy.dll");
+//
+//                if (HttpContext.Current != null)
+//                    assemblyRoot = HttpContext.Current.Server.MapPath("~/bin");
+//                else
+//                {
+//                    var codebaseuri = Assembly.GetExecutingAssembly().CodeBase;
+//                    Uri codebaseURI = null;
+//                    if (Uri.TryCreate(codebaseuri, UriKind.Absolute, out codebaseURI))
+//                        assemblyRoot = Path.GetDirectoryName(codebaseURI.LocalPath); // (check pre-shadow copy location first)
+//                    if (!Directory.Exists(assemblyRoot))
+//                        assemblyRoot = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); // (check loaded assembly location next)
+//                }
+//
+//                if (Directory.Exists(Path.Combine(assemblyRoot, ASPBINSubFolderName)))
+//                    assemblyRoot = Path.Combine(assemblyRoot, ASPBINSubFolderName);
+//
+//                //// ... validate access to the root folder ...
+//                //var permission = new FileIOPermission(FileIOPermissionAccess.Read, assemblyRoot);
+//                //var permissionSet = new PermissionSet(PermissionState.None);
+//                //permissionSet.AddPermission(permission);
+//                //if (!permissionSet.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet))
+//
+//                // ... get platform details ...
+//
+//                var bitStr = IntPtr.Size == 8 ? "x64" : "x86";
+//                var platformLibraryPath = Path.Combine(assemblyRoot, bitStr);
+//                string fileName;
+//                // ... if the platform folder doesn't exist, try loading assemblies from the current folder ...
+//                if (Directory.Exists(platformLibraryPath))
+//                    fileName = Path.Combine(platformLibraryPath, "V8.Net.Proxy.Interface." + bitStr + ".dll");
+//                else
+//                    fileName = Path.Combine(assemblyRoot, "V8.Net.Proxy.Interface." + bitStr + ".dll");
+//
+//                // ... attempt to update environment variable automatically for the native DLLs ...
+//                // (see: http://stackoverflow.com/questions/7996263/how-do-i-get-iis-to-load-a-native-dll-referenced-by-my-wcf-service
+//                //   and http://stackoverflow.com/questions/344608/unmanaged-dlls-fail-to-load-on-asp-net-server)
+//
+//                try
+//                {
+//                    var path = System.Environment.GetEnvironmentVariable("PATH"); // TODO: Detect other systems if necessary.
+//                    System.Environment.SetEnvironmentVariable("PATH", platformLibraryPath + ";" + path);
+//                }
+//                catch { }
+//
+//                AppDomain.CurrentDomain.AssemblyResolve -= Resolver;  // (handler is only needed once)
+//
+//                // ... if the current directory has an x86 or x64 folder for the bit depth, automatically change to that folder ...
+//                // (this is required to load the correct VC++ libraries if made available locally)
+//
+//                var bitLibFolder = Path.Combine(Directory.GetCurrentDirectory(), bitStr);
+//                if (Directory.Exists(bitLibFolder))
+//                    Directory.SetCurrentDirectory(bitLibFolder);
+//
                 try
                 {
                     return Assembly.LoadFrom(fileName);
                 }
                 catch (Exception ex)
                 {
-                    var msg = "Failed to load '" + fileName + "'.  V8.NET is running in the '" + bitStr + "' mode.  Some areas to check: \r\n"
+                    var msg = "Failed to load '" + fileName + "'.  V8.NET is running in the '" + "x86" + "' mode.  Some areas to check: \r\n"
                         + "1. The VC++ 2012 redistributable libraries are included, but if missing  for some reason, download and install from the Microsoft Site.\r\n"
                         + "2. Did you download the DLLs from a ZIP file? If done so on Windows, you must open the file properties of the zip file and 'Unblock' it before extracting the files.\r\n"
                         ;
                     if (HttpContext.Current != null)
-                        msg += "3. Make sure the path '" + assemblyRoot + "' is accessible to the application pool identity (usually Read & Execute for 'IIS_IUSRS', or a similar user/group)";
+						msg += "3. Make sure the path '" + fileName + "' is accessible to the application pool identity (usually Read & Execute for 'IIS_IUSRS', or a similar user/group)";
                     else
-                        msg += "3. Make sure the path '" + assemblyRoot + "' is accessible to the application for loading the required libraries.";
+						msg += "3. Make sure the path '" + fileName + "' is accessible to the application for loading the required libraries.";
                     throw new InvalidOperationException(msg + "\r\n", ex);
                 }
-            }
+           }
 
             return null;
         }

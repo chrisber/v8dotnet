@@ -32,6 +32,7 @@
             'Source/V8.NET-Proxy/Utilities.cpp',
             'Source/V8.NET-Proxy/V8EngineProxy.cpp',
             'Source/V8.NET-Proxy/ValueProxy.cpp',
+            'Source/V8.NET-Proxy/ProxyTypes.h',
          ],
          'conditions':[  
             ['OS=="linux"',
@@ -106,27 +107,38 @@
             ] ,
             ['OS=="win"',
             {
-               'defines': ['_WIN'],
-                  'copies':[  
-                     {  
-                        'destination':'<(PRODUCT_DIR)/../../',
-                        'files':[  
-                           'Source/V8.NET-Proxy/V8/build/v8.dll',
-                        ],
-                     }
-                  ],
-                  'link_settings':{  
-                     'libraries':[  
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/build/Debug/lib/mksnapshot.lib',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/build/Debug/lib/v8.lib',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/build/Debug/lib/v8_base.lib',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/build/Debug/lib/v8_external_snapshot.lib',                        
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/build/Debug/lib/v8_libbase.lib',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/build/Debug/lib/v8_libplatform.lib',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/build/Debug/lib/v8_nosnapshot.lib',
-                        '<(base_dir)/Source/V8.NET-Proxy/V8/build/Debug/lib/v8_snapshot.lib',
-                     ]
+               'defines': [
+               '_WIN',
+               '_MSC_PLATFORM_TOOLSET=120',
+               ],
+                'msvs_settings':{
+                  'VCCLCompilerTool':{
+                      'RuntimeLibrary': '0',
+                        'Optimization':  '0' ,
                   },
+                  'VCLinkerTool':{
+                    'AdditionalDependencies': [
+                        '<(base_dir)\\io.js\\build\\Release\\lib\\v8.lib',
+                        '<(base_dir)\\io.js\\build\\Release\\lib\\v8_base.lib',
+                        '<(base_dir)\\io.js\\build\\Release\\lib\\v8_libbase.lib',
+                        '<(base_dir)\\io.js\\build\\Release\\lib\\v8_libplatform.lib',
+                        '<(base_dir)\\io.js\\build\\Release\\lib\\v8_nosnapshot.lib',
+                        '<(base_dir)\\io.js\\build\\Release\\lib\\v8_snapshot.lib',
+                    ]
+                  },
+                  'VCMIDLTool':{
+
+                  },
+                  'VCResourceCompilerTool':{
+
+                  },
+                  'VCLibrarianTool':{
+
+                  },
+                  'VCManifestTool':{
+
+                  },
+                }
                }
             ],           
          ]

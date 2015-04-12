@@ -7,6 +7,8 @@
 *.user
 *.sln.docstates
 
+python_26
+
 # Build results
 Build/
 BuildResult/
